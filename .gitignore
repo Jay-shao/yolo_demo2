@@ -1,0 +1,16 @@
+# dataset
+dataset/
+
+# training results
+runs/
+
+# python cache
+__pycache__/
+
+*.pyc
+
+# model cache
+*.pt
+
+# vscode
+.vscode/
