@@ -1,16 +1,35 @@
-# dataset
-dataset/
 
-# training results
+# Dataset
+
+# Don't upload large image/label datasets
+dataset/images/
+dataset/labels/
+
+# YOLO cache files
+*.cache
+
+
+# Training results
+
+# Ignore automatic YOLO training outputs
 runs/
 
-# python cache
-__pycache__/
 
+# Python cache
+
+__pycache__/
 *.pyc
 
-# model cache
+
+# Model files
+
+# Ignore downloaded / temporary model weights
 *.pt
 
-# vscode
+# But keep our final trained model
+!weights/best.pt
+
+
+
+# VS Code
 .vscode/

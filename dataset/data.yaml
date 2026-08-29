@@ -1,0 +1,9 @@
+train: images/train
+val: images/val
+test: images/test
+nc: 4
+names:
+  0: book
+  1: keyboard
+  2: laptop
+  3: cell_phone

@@ -1,0 +1,4 @@
+0 = book
+1 = keyboard
+2 = laptop
+3 = cell_phone
