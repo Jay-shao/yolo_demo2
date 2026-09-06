@@ -1,20 +1,20 @@
-# 实验一：目标检测与识别
+# Experiment I: Object Detection and Recognition
 
-这是我这次目标检测实验的项目说明。项目主要使用 **YOLO11、Jetson 和 ROS 2**，完成桌面物体的实时检测。
+This repository contains my implementation for the object detection experiment. The project mainly uses **YOLO11, NVIDIA Jetson, and ROS 2** to perform real-time detection of desktop objects.
 
-这次实验主要测试了 3 类物体：
+The experiment mainly evaluates three object categories:
 
 - `book`
 - `keyboard`
 - `laptop`
 
-程序运行后可以显示检测框、类别、置信度和 FPS，同时会把检测结果通过 ROS 2 发布出去。也可以保存正确检测图片和错误案例。
+After the program starts, it can display bounding boxes, class labels, confidence scores, and FPS in real time. The detection results are also published through ROS 2. In addition, correct detection results and representative error cases can be saved during testing.
 
 ---
 
-## 1. 项目文件
+## 1. Project Files
 
-项目主要文件如下：
+The main project files are organized as follows:
 
 ```text
 yolo_demo/
@@ -30,20 +30,20 @@ yolo_demo/
 └── README.md
 ```
 
-各文件作用：
+Main files:
 
-- `train.py`：训练 YOLO11n 模型
-- `src/detect.py`：在 Jetson 上进行实时检测，同时发布 ROS 2 结果
-- `weights/best.pt`：训练完成后使用的模型
-- `run_jetson.sh`：启动 Jetson 检测程序
-- `results/success/`：保存正常检测结果
-- `results/error_cases/`：保存错误案例
+- `train.py`: trains the YOLO11n model
+- `src/detect.py`: performs real-time detection on Jetson and publishes ROS 2 results
+- `weights/best.pt`: trained model used for inference
+- `run_jetson.sh`: starts the Jetson detection program
+- `results/success/`: stores correct detection results
+- `results/error_cases/`: stores representative error cases
 
 ---
 
-## 2. 模型训练
+## 2. Model Training
 
-训练使用的是 YOLO11n，主要参数如下：
+The model used in this experiment is YOLO11n. The main training parameters are:
 
 ```text
 epochs = 100
@@ -54,13 +54,13 @@ workers = 4
 patience = 30
 ```
 
-在电脑项目目录下运行：
+Run the following command in the project directory on the PC:
 
 ```bash
 python train.py
 ```
 
-训练完成后，将最终使用的模型放到：
+After training, place the final model at:
 
 ```text
 weights/best.pt
@@ -68,59 +68,61 @@ weights/best.pt
 
 ---
 
-## 3. Jetson 上运行
+## 3. Running on Jetson
 
-Jetson 中项目路径为：
+The project path on Jetson is:
 
 ```text
 /home/nvidia/yolo_demo
 ```
 
-进入项目目录：
+Enter the project directory:
 
 ```bash
 cd /home/nvidia/yolo_demo
 ```
 
-启动程序：
+Start the program:
 
 ```bash
 bash run_jetson.sh
 ```
 
-如果不使用 `.sh` 文件，也可以直接运行：
+If the `.sh` file is not used, the program can also be started directly:
 
 ```bash
 source /opt/ros/humble/setup.bash
 python3 src/detect.py
 ```
 
-程序运行后会打开摄像头检测窗口，窗口中会显示：
+After the program starts, the camera window displays:
 
-- 目标类别
-- 检测框
-- 置信度
+- Object class
+- Bounding box
+- Confidence score
 - FPS
 
 ---
 
-## 4. 保存检测结果
+## 4. Saving Detection Results
 
-运行时先点击检测窗口，然后使用下面几个按键：
+During runtime, click the detection window first so that it receives keyboard input.
+
+Use the following keys:
 
 ```text
-S：保存正确检测结果
-E：保存错误案例
-Q：退出程序
+S: save a correct detection result
+E: save an error case
+Q: quit the program
 ```
 
-正确结果保存在：
+Correct detection results are saved to:
 
 ```text
 /home/nvidia/yolo_demo/results/success/
 ```
 
-错误案例保存在：
+Error cases are saved to:
 
 ```text
 /home/nvidia/yolo_demo/results/error_cases/
@@ -128,117 +130,115 @@ Q：退出程序
 
 ---
 
-## 5. 查看 ROS 2 结果
+## 5. Viewing ROS 2 Results
 
-检测程序运行后，再打开一个 Jetson 终端。
+While the detection program is running, open another terminal on Jetson.
 
-先加载 ROS 2：
+First, load the ROS 2 environment:
 
 ```bash
 source /opt/ros/humble/setup.bash
 ```
 
-查看当前 Topic：
+Check the available topics:
 
 ```bash
 ros2 topic list
 ```
 
-可以看到：
+The detection results are published to:
 
 ```text
 /detected_objects
 ```
 
-查看实时检测结果：
+View the real-time ROS 2 output:
 
 ```bash
 ros2 topic echo /detected_objects
 ```
 
-输出像：
+Example output:
 
 ```text
 data: 'class=book, confidence=0.84, bbox=[78,119,583,644]'
 ---
 ```
 
-其中：
+The message fields mean:
 
 ```text
-class       表示类别
-confidence  表示置信度
-bbox        表示检测框坐标
+class       object category
+confidence  detection confidence
+bbox        bounding box coordinates
 ```
 
 ---
 
-## 6. 实验验收
+## 6. Experiment Verification
 
-验收时我主要按下面的顺序进行：
+I mainly followed the steps below during the final verification.
 
-### 1）启动检测程序
+### 1) Start the Detection Program
 
 ```bash
 cd /home/nvidia/yolo_demo
 bash run_jetson.sh
 ```
 
-### 2）测试多目标识别
+### 2) Test Multi-Object Detection
 
-在摄像头前同时放两个不同类别的物体，例如：
+Place two different object categories in front of the camera at the same time, for example:
 
 ```text
 keyboard + laptop
 ```
 
-检查是否能够同时识别两个类别。
+Check whether both categories can be detected simultaneously.
 
-### 3）检查 FPS
+### 3) Check FPS
 
-程序窗口会实时显示 FPS。
+The program displays FPS in the detection window.
 
-实验要求：
+Requirement:
 
 ```text
 FPS >= 5
 ```
 
-实际测试时基本在：
+During my test, the detection speed was around:
 
 ```text
 8.9 FPS
 ```
 
-左右。
+### 4) Check ROS 2 Output
 
-### 4）查看 ROS 2
-
-打开第二个终端：
+Open another terminal:
 
 ```bash
 source /opt/ros/humble/setup.bash
 ros2 topic echo /detected_objects
 ```
 
-检查类别、置信度和检测框坐标是否能够正常发布。
+Check whether the class, confidence score, and bounding box coordinates are published correctly.
 
-### 5）保存结果
+### 5) Save Results
 
 ```text
-S：保存正确结果
-E：保存错误案例
+S: save a correct result
+E: save an error case
 ```
 
-### 6）20 次测试
+### 6) Perform 20 Detection Tests
 
-实验中进行了 20 次检测测试，其中 19 次识别正确：
+A total of 20 detection tests were recorded, with 19 correct detections:
 
 ```text
 19 / 20 = 95%
 ```
 
-满足实验要求的：
+This satisfies the experiment requirement:
 
 ```text
 Accuracy >= 80%
@@ -246,17 +246,17 @@ Accuracy >= 80%
 
 ---
 
-## 7. 运行中遇到的问题
+## 7. Problems Encountered During Deployment
 
-在部署 Jetson 的过程中，我一开始使用 SSH 连接电脑和 Jetson，但是连接不是很稳定，后面改成直接使用数据线连接之后才正常完成文件传输和测试。
+During Jetson deployment, I first tried to connect my PC to the Jetson through SSH, but the connection was not stable. Later, I switched to a direct data-cable connection, which allowed me to complete file transfer and testing successfully.
 
-然后配置 Python 和 Conda 环境也花了比较长时间，主要是为了确认 PyTorch、Ultralytics、OpenCV 和 ROS 2 都能正常使用。环境配置完成之后，后面的模型加载和实时检测就比较顺利了。
+I also spent quite a lot of time configuring the Python and Conda environment. The main difficulty was making sure that PyTorch, Ultralytics, OpenCV, and ROS 2 could all work correctly in the same environment. After the environment was configured successfully, model loading and real-time detection worked much more smoothly.
 
 ---
 
-## 8. 提交内容
+## 8. Submission Files
 
-这次实验提交的主要内容包括：
+The main submission files for this experiment are:
 
 ```text
 dataset
@@ -264,8 +264,8 @@ best.pt
 train.py
 detect.py
 run_jetson.sh
-检测结果
-结果视频
+detection results
+result video
 README.md
-实验报告
+experiment report
 ```
